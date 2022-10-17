@@ -22,6 +22,7 @@ module.exports.getUsers = (req, res) => {
 module.exports.getUserById = (req, res) => {
 	const { userId } = req.params;
 	User.findById(userId)
+		.orFail(() => new Error('NotFound'))
 		.then((user) => res.send({ data: user }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
@@ -49,7 +50,6 @@ module.exports.updateUserById = (req, res) => {
 	)
 		.then((user) => res.send({ data: user }))
 		.catch((err) => {
-			console.log(err.name)
 			if (err.name === 'ValidationError' || err.name === 'CastError') {
 				res.status(400).send({ message: 'Некорректные данные для обновления информации' });
 			} else {
