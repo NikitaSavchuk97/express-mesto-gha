@@ -23,10 +23,13 @@ module.exports.getCards = (req, res) => {
 module.exports.deleteCardById = (req, res) => {
 	const { cardId } = req.params;
 	Card.findByIdAndRemove(cardId)
+		.orFail(() => new Error('NotFound'))
 		.then(card => res.send({ data: card }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
 				res.status(404).send({ message: 'Карточки с таким _id не существует' });
+			} else if (err.message === 'NotFound') {
+				res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
@@ -46,10 +49,13 @@ module.exports.likeCard = (req, res) => {
 			new: true
 		},
 	)
+		.orFail(() => new Error('NotFound'))
 		.then(card => res.send({ data: card }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
 				res.status(404).send({ message: 'Карточки с таким _id не существует' });
+			} else if (err.message === 'NotFound') {
+				res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
@@ -69,10 +75,13 @@ module.exports.dislikeCard = (req, res) => {
 			new: true
 		},
 	)
+		.orFail(() => new Error('NotFound'))
 		.then(card => res.send({ data: card }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
 				res.status(404).send({ message: 'Карточки с таким _id не существует' });
+			} else if (err.message === 'NotFound') {
+				res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
