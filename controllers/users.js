@@ -48,7 +48,7 @@ module.exports.updateUserById = (req, res) => {
 			new: true, // обработчик then получит на вход обновлённую запись
 		},
 	)
-
+		.orFail(() => new Error('NotFound'))
 		.then((user) => res.send({ data: user }))
 		.catch((err) => {
 			if (err.name === 'ValidationError' || err.name === 'CastError') {
