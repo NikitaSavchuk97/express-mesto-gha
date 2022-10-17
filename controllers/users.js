@@ -48,10 +48,13 @@ module.exports.updateUserById = (req, res) => {
 			new: true, // обработчик then получит на вход обновлённую запись
 		},
 	)
+
 		.then((user) => res.send({ data: user }))
 		.catch((err) => {
 			if (err.name === 'ValidationError' || err.name === 'CastError') {
 				res.status(400).send({ message: 'Некорректные данные для обновления информации' });
+			} else if (err.message === 'NotFound') {
+				res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
@@ -70,11 +73,14 @@ module.exports.updateAvatarById = (req, res) => {
 			new: true, // обработчик then получит на вход обновлённую запись
 		},
 	)
+		.orFail(() => new Error('NotFound'))
 		.then((user) => res.send({ data: user }))
 		.catch((err) => {
 			console.log(err.name)
 			if (err.name === 'ValidationError' || err.name === 'CastError') {
 				res.status(400).send({ message: 'Некорректные данные для обновления аватара' });
+			} else if (err.message === 'NotFound') {
+				res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
