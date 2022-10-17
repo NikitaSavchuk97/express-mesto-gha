@@ -27,7 +27,7 @@ module.exports.deleteCardById = (req, res) => {
 		.then(card => res.send({ data: card }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
-				res.status(404).send({ message: 'Карточки с таким _id не существует' });
+				res.status(400).send({ message: 'Карточки с таким _id не существует' });
 			} else if (err.message === 'NotFound') {
 				res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
 			} else {
@@ -53,7 +53,7 @@ module.exports.likeCard = (req, res) => {
 		.then(card => res.send({ data: card }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
-				res.status(404).send({ message: 'Карточки с таким _id не существует' });
+				res.status(400).send({ message: 'Карточки с таким _id не существует' });
 			} else if (err.message === 'NotFound') {
 				res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
 			} else {
@@ -79,7 +79,7 @@ module.exports.dislikeCard = (req, res) => {
 		.then(card => res.send({ data: card }))
 		.catch((err) => {
 			if (err.name === 'CastError') {
-				res.status(404).send({ message: 'Карточки с таким _id не существует' });
+				res.status(400).send({ message: 'Карточки с таким _id не существует' });
 			} else if (err.message === 'NotFound') {
 				res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
 			} else {
