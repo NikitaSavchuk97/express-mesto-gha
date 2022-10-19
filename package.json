@@ -14,7 +14,8 @@
   "scripts": {
     "start": "node app.js",
     "dev": "nodemon app.js",
-    "lint": "npx eslint ."
+    "lint": "npx eslint .",
+		"lint:fix": "npx eslint . --fix"
   },
   "dependencies": {
     "body-parser": "^1.20.1",
