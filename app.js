@@ -2,32 +2,28 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { errors } = require('celebrate');
+const auth = require('./middlewares/auth');
+const { loginUser, loginUserValidation, createUser, createUserValidation } = require('./controllers/users')
+
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 const app = express();
 
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 // подключаемся к серверу mongo
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '63484206febc3bded5346add', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
-  next();
-});
-
+app.post('/signup', createUserValidation, createUser);
+app.post('/signin', loginUserValidation, loginUser);
+app.use(auth);
 app.use(require('./routes/users'));
-app.use(require('./routes/cards'));
-
-app.use((req, res) => {
-  res.status(404).send({ message: 'Запрашиваемый ресурс не найден' });
-});
+app.use(errors());
 
 // Если всё работает, консоль покажет, какой порт приложение слушает
 app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
+	console.log(`App listening on port ${PORT}`);
 });
