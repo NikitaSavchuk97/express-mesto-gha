@@ -116,7 +116,7 @@ module.exports.getUserById = (req, res, next) => {
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
-			next(err);
+			return next(err);
 		})
 };
 
