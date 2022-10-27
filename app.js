@@ -32,8 +32,8 @@ app.use(auth);
 app.use(routerUsers);
 app.use(routerCards);
 
-app.use(serverError);
 app.use(errors());
+app.use(serverError);
 
 // Если всё работает, консоль покажет, какой порт приложение слушает
 app.listen(PORT, () => {
