@@ -27,7 +27,7 @@ module.exports.loginUser = (req, res, next) => {
 			res.cookie(
 				'jwt',
 				token,
-				{ maxAge: 3600000 * 24 * 7, httpOnly: true, },
+				{ maxAge: 3600000 * 24 * 7, httpOnly: true },
 			)
 				.end('Работает!')
 		})
@@ -63,7 +63,7 @@ module.exports.createUser = (req, res) => {
 			} else if (err.name === 'ValidationError') {
 				res.status(400).send({ message: "Некорректные данные" });
 			} else {
-				res.status(400).send({ message: "Не фур фур" });
+				res.status(400).send({ message: "Не фур-фур" });
 			}
 		});
 };
@@ -78,15 +78,13 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUserMe = (req, res, next) => {
 	User.findById(req.user._id)
-		.orFail(() => {
-			throw new NotFound("Пользователь не найден");
-		})
+		.orFail(() => new Error("NotFound"))
 		.then((user) => res.status(200).send({ user }))
 		.catch((err) => {
 			if (err.name === "CastError") {
-				throw new BadRequest("Переданы некорректные данные");
+				res.status(400).send({ message: 'Переданы некорректные данные' });
 			} else if (err.message === "NotFound") {
-				throw new NotFound("Пользователь не найден");
+				res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
 			}
 		})
 		.catch(next);
