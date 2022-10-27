@@ -84,10 +84,10 @@ module.exports.createUser = (req, res) => {
 
 
 
-module.exports.getUsers = (req, res, next) => {
+module.exports.getUsers = (req, res) => {
 	User.find({})
 		.then((users) => res.send(users))
-		.catch(next);
+		.catch(() => res.status(400).send({ message: 'Переданы некорректные данные' }));
 };
 
 module.exports.getUserMe = (req, res) => {
@@ -103,7 +103,7 @@ module.exports.getUserMe = (req, res) => {
 		})
 };
 
-module.exports.getUserById = (req, res, next) => {
+module.exports.getUserById = (req, res) => {
 	const { userId } = req.params;
 	User.findById(userId)
 		.orFail(() => new Error('NotFound'))
@@ -116,7 +116,6 @@ module.exports.getUserById = (req, res, next) => {
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
-			return next(err);
 		})
 };
 
