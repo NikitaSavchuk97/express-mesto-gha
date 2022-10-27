@@ -3,7 +3,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
-const { errors, celebrate } = require('celebrate');
+const { errors, celebrate, Joi } = require('celebrate');
 
 const serverError = require('./middlewares/serverError');
 const auth = require('./middlewares/auth');
