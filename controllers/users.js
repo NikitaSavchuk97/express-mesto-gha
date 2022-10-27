@@ -7,6 +7,9 @@ const User = require('../models/user');
 
 module.exports.loginUserValidation = celebrate({
 	body: Joi.object().keys({
+		name: Joi.string().min(2).max(30),
+		about: Joi.string().min(2).max(30),
+		avatar: Joi.string(),
 		email: Joi.string().required().email(),
 		password: Joi.string().required().min(6),
 	})
@@ -31,13 +34,15 @@ module.exports.loginUser = (req, res) => {
 		.catch(() => {
 			res.status(401).send({ message: 'Пользователя с таким email не существует' })
 		});
-
 };
 
 
 
 module.exports.createUserValidation = celebrate({
 	body: Joi.object().keys({
+		name: Joi.string().min(2).max(30),
+		about: Joi.string().min(2).max(30),
+		avatar: Joi.string(),
 		email: Joi.string().required().email(),
 		password: Joi.string().required().min(6),
 	})
@@ -56,13 +61,13 @@ module.exports.createUser = (req, res, next) => {
 		}))
 		.catch((err) => {
 			if (err.code === 11000) {
-				next(new Error("Пользователь с таким email уже существует"));
+				res.status(409).send({ message: "Пользователь с таким email уже существует" });
 			} else if (err.name === 'ValidationError') {
-				next(new Error("Некорректные данные"));
+				res.status(400).send({ message: "Некорректные данные" });
 			} else {
-				next(err);
+				res.status(400).send({ message: "Не фур фур" });
 			}
-		})
+		});
 };
 
 
@@ -75,15 +80,13 @@ module.exports.getUsers = (req, res, next) => {
 
 module.exports.getUserMe = (req, res, next) => {
 	User.findById(req.user._id)
-		.orFail(() => {
-			throw new NotFound("Пользователь не найден");
-		})
+		.orFail(() => new Error("NotFound"))
 		.then((user) => res.status(200).send({ user }))
 		.catch((err) => {
 			if (err.name === "CastError") {
-				throw new BadRequest("Переданы некорректные данные");
+				res.status(400).send({ message: 'Переданы некорректные данные' });
 			} else if (err.message === "NotFound") {
-				throw new NotFound("Пользователь не найден");
+				res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
 			}
 		})
 		.catch(next);
