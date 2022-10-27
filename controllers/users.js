@@ -104,7 +104,7 @@ module.exports.getUserMe = (req, res, next) => {
 		.catch(next);
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
 	const { userId } = req.params;
 	User.findById(userId)
 		.orFail(() => new Error('NotFound'))
@@ -117,10 +117,11 @@ module.exports.getUserById = (req, res) => {
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
-		});
+		})
+		.catch(next);
 };
 
-module.exports.updateUserById = (req, res) => {
+module.exports.updateUserById = (req, res, next) => {
 	const owner = req.user._id;
 	const { name, about } = req.body;
 	User.findByIdAndUpdate(
@@ -144,10 +145,11 @@ module.exports.updateUserById = (req, res) => {
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
-		});
+		})
+		.catch(next);
 };
 
-module.exports.updateAvatarById = (req, res) => {
+module.exports.updateAvatarById = (req, res, next) => {
 	const owner = req.user._id;
 	const { avatar } = req.body;
 	User.findByIdAndUpdate(
@@ -167,5 +169,6 @@ module.exports.updateAvatarById = (req, res) => {
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
-		});
+		})
+		.catch(next);
 };
