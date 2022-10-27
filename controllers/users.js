@@ -90,7 +90,7 @@ module.exports.getUsers = (req, res, next) => {
 		.catch(next);
 };
 
-module.exports.getUserMe = (req, res, next) => {
+module.exports.getUserMe = (req, res) => {
 	User.findById(req.user._id)
 		.orFail(() => new Error("NotFound"))
 		.then((user) => res.status(200).send({ user }))
@@ -101,10 +101,9 @@ module.exports.getUserMe = (req, res, next) => {
 				res.status(404).send({ message: 'Пользователь по указанному _id не найден' });
 			}
 		})
-		.catch(next);
 };
 
-module.exports.getUserById = (req, res, next) => {
+module.exports.getUserById = (req, res) => {
 	const { userId } = req.params;
 	User.findById(userId)
 		.orFail(() => new Error('NotFound'))
@@ -118,10 +117,9 @@ module.exports.getUserById = (req, res, next) => {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
 		})
-		.catch(next);
 };
 
-module.exports.updateUserById = (req, res, next) => {
+module.exports.updateUserById = (req, res) => {
 	const owner = req.user._id;
 	const { name, about } = req.body;
 	User.findByIdAndUpdate(
@@ -146,10 +144,9 @@ module.exports.updateUserById = (req, res, next) => {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
 		})
-		.catch(next);
 };
 
-module.exports.updateAvatarById = (req, res, next) => {
+module.exports.updateAvatarById = (req, res) => {
 	const owner = req.user._id;
 	const { avatar } = req.body;
 	User.findByIdAndUpdate(
@@ -170,5 +167,4 @@ module.exports.updateAvatarById = (req, res, next) => {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
 		})
-		.catch(next);
 };
