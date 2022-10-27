@@ -7,6 +7,9 @@ const User = require('../models/user');
 
 module.exports.loginUserValidation = celebrate({
 	body: Joi.object().keys({
+		name: Joi.string().min(2).max(30),
+		about: Joi.string().min(2).max(30),
+		avatar: Joi.string(),
 		email: Joi.string().required().email(),
 		password: Joi.string().required().min(6),
 	})
@@ -35,12 +38,15 @@ module.exports.loginUser = (req, res, next) => {
 
 module.exports.createUserValidation = celebrate({
 	body: Joi.object().keys({
+		name: Joi.string().min(2).max(30),
+		about: Joi.string().min(2).max(30),
+		avatar: Joi.string(),
 		email: Joi.string().required().email(),
 		password: Joi.string().required().min(6),
 	})
 });
 
-module.exports.createUser = (req, res, next) => {
+module.exports.createUser = (req, res) => {
 	const { name, about, avatar, email, password } = req.body;
 	bcrypt
 		.hash(password, 10)
@@ -53,13 +59,13 @@ module.exports.createUser = (req, res, next) => {
 		}))
 		.catch((err) => {
 			if (err.code === 11000) {
-				next(new Error("Пользователь с таким email уже существует"));
+				res.status(409).send({ message: "Пользователь с таким email уже существует" });
 			} else if (err.name === 'ValidationError') {
-				next(new Error("Некорректные данные"));
+				res.status(400).send({ message: "Некорректные данные" });
 			} else {
-				next(err);
+				res.status(400).send({ message: "Не фур фур" });
 			}
-		})
+		});
 };
 
 
