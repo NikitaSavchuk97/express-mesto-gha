@@ -49,7 +49,7 @@ module.exports.createUser = (req, res) => {
       } else if (err.name === 'ValidationError') {
         res.status(400).send({ message: 'Некорректные данные' });
       } else {
-        res.status(400).send({ message: 'Не фур-фур' });
+        res.status(404).send({ message: 'Не фур-фур' });
       }
     });
 };
