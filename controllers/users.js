@@ -103,7 +103,7 @@ module.exports.getUserMe = (req, res) => {
 		})
 };
 
-module.exports.getUserById = (req, res) => {
+module.exports.getUserById = (req, res, next) => {
 	const { userId } = req.params;
 	User.findById(userId)
 		.orFail(() => new Error('NotFound'))
@@ -116,6 +116,7 @@ module.exports.getUserById = (req, res) => {
 			} else {
 				res.status(500).send({ message: 'На сервере произошла ошибка' });
 			}
+			next(err);
 		})
 };
 
