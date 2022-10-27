@@ -1,6 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { celebrate, Joi } = require('celebrate');
+
 const User = require('../models/user');
 
 
@@ -29,7 +30,10 @@ module.exports.loginUser = (req, res) => {
 				token,
 				{ maxAge: 3600000 * 24 * 7 },
 			)
-				.end('Работает!')
+			res.status(200).send({
+				name: user.name,
+				email: user.email,
+			});
 		})
 		.catch(() => {
 			res.status(401).send({ message: 'Пользователя с таким email не существует' })
@@ -38,17 +42,25 @@ module.exports.loginUser = (req, res) => {
 
 
 
+const validateUrl = (url) => {
+	const regex = /^https?:\/\/(www\.)?[a-zA-Z\d]+\.[\w\-._~:\/?#[\]@!$&'()*+,;=]{2,}#?$/g;
+	if (regex.test(url)) {
+		return url;
+	}
+	throw new Error('Invalid url');
+};
+
 module.exports.createUserValidation = celebrate({
 	body: Joi.object().keys({
 		name: Joi.string().min(2).max(30),
 		about: Joi.string().min(2).max(30),
-		avatar: Joi.string(),
+		avatar: Joi.string().custom(validateUrl, 'custom validation'),
 		email: Joi.string().required().email(),
 		password: Joi.string().required().min(6),
 	})
 });
 
-module.exports.createUser = (req, res, next) => {
+module.exports.createUser = (req, res) => {
 	const { name, about, avatar, email, password } = req.body;
 	bcrypt
 		.hash(password, 10)
@@ -65,7 +77,7 @@ module.exports.createUser = (req, res, next) => {
 			} else if (err.name === 'ValidationError') {
 				res.status(400).send({ message: "Некорректные данные" });
 			} else {
-				res.status(400).send({ message: "Не фур фур" });
+				res.status(400).send({ message: "Не фур-фур" });
 			}
 		});
 };
