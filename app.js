@@ -7,7 +7,6 @@ const auth = require('./middlewares/auth');
 const routerUsers = require('./routes/users');
 const { loginUser, loginUserValidation, createUser, createUserValidation } = require('./controllers/users')
 
-
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -16,14 +15,13 @@ const app = express();
 mongoose.connect('mongodb://localhost:27017/mestodb');
 
 app.use(cookieParser());
-
 app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+//app.use(bodyParser.urlencoded({ extended: true }));
 
 app.post('/signup', createUserValidation, createUser);
 app.post('/signin', loginUserValidation, loginUser);
 
-app.use(auth)
+app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 

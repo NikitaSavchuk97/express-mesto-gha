@@ -24,7 +24,7 @@ module.exports.loginUser = (req, res, next) => {
 			res.cookie(
 				'jwt',
 				token,
-				{ maxAge: 3600000 * 24 * 7 },
+				{ maxAge: 3600000 * 24 * 7, httpOnly: true, },
 			)
 				.end('Работает!')
 		})
