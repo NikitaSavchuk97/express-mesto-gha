@@ -24,8 +24,6 @@ app.use(cookieParser());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use(errors());
-
 app.post('/signup', createUserValidation, createUser);
 app.post('/signin', loginUserValidation, loginUser);
 
@@ -34,9 +32,8 @@ app.use(auth);
 app.use(routerUsers);
 app.use(routerCards);
 
-
 app.use(serverError);
-
+app.use(errors());
 
 // Если всё работает, консоль покажет, какой порт приложение слушает
 app.listen(PORT, () => {
