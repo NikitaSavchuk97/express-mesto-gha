@@ -5,12 +5,12 @@ const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
 
-const serverError = require('./middlewares/serverError')
+const serverError = require('./middlewares/serverError');
 const auth = require('./middlewares/auth');
 const routerUsers = require('./routes/users');
 const routerCards = require('./routes/cards');
 const {
-	loginUser, loginUserValidation, createUser, createUserValidation,
+  loginUser, loginUserValidation, createUser, createUserValidation,
 } = require('./controllers/users');
 
 // Слушаем 3000 порт
@@ -37,5 +37,5 @@ app.use(serverError);
 
 // Если всё работает, консоль покажет, какой порт приложение слушает
 app.listen(PORT, () => {
-	console.log(`App listening on port ${PORT}`);
+  console.log(`App listening on port ${PORT}`);
 });
