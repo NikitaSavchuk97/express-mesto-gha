@@ -21,18 +21,18 @@ module.exports.getCards = (req, res) => {
 };
 
 module.exports.deleteCardById = (req, res) => {
-  const ownerId = req.params.owner;
-  console.log(ownerId, req.user._id);
-
-  Card.findById(req.params.cardId)
+  const { cardId } = req.params;
+  Card.findById(cardId)
     .orFail(() => new Error('NotFound'))
-
     .then((card) => {
-      if (req.user._id === ownerId) {
-        res.send({ data: card });
+      console.log(card.owner, req.user._id);
+      if (card.owner.equals(req.user._id)) {
+        card.remove()
+          .then(() => res.status(200).send({ message: 'Карточка удалена' }));
+      } else if (!card.owner === req.user._id) {
+        res.status(403).send({ message: 'Пытаетесь удалить чужую карточку' });
       }
     })
-
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточки с таким _id не существует' });
