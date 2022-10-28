@@ -63,6 +63,10 @@ app.use(auth);
 app.use(routerUsers);
 app.use(routerCards);
 
+app.use((req, res) => {
+  res.status(404).send({ message: 'Запрашиваемая страница не существует' });
+});
+
 app.use(errors());
 app.use(serverError);
 
