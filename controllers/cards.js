@@ -25,21 +25,17 @@ module.exports.deleteCardById = (req, res) => {
   Card.findById(cardId)
     .orFail(() => new Error('NotFound'))
     .then((card) => {
-      console.log(card.owner, req.user._id);
-      if (card.owner.equals(req.user._id)) {
-        card.remove()
-          .then(() => res.status(200).send({ message: 'Карточка удалена' }));
-      } else if (!card.owner === req.user._id) {
-        res.status(403).send({ message: 'Пытаетесь удалить чужую карточку' });
+      if (!card.owner.equals(req.user._id)) {
+        return res.status(403).send({ message: 'Пытаетесь удалить чужую карточку' })
       }
+      return card.remove()
+        .then(() => res.status(200).send({ message: 'Карточка удалена' }));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         res.status(400).send({ message: 'Карточки с таким _id не существует' });
       } else if (err.message === 'NotFound') {
         res.status(404).send({ message: 'Карточка по указанному _id не найдена' });
-      } else {
-        res.status(500).send({ message: 'На сервере произошла ошибка' });
       }
     });
 };
