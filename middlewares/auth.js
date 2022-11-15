@@ -1,23 +1,20 @@
 const jsonwebtoken = require('jsonwebtoken');
 
-module.exports = (req, res, next) => {
-  const authorization = `Bearer ${req.cookies.jwt}`;
+const AuthError401 = require('../errors/authError');
 
-  if (!authorization || !authorization.startsWith('Bearer ')) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+module.exports = (req, res, next) => {
+  const token = req.cookies.jwt;
+
+  if (!token) {
+    return next(new AuthError401('Необходима авторизация'));
   }
 
-  const token = authorization.replace('Bearer ', '');
   let payload;
 
   try {
     payload = jsonwebtoken.verify(token, 'yandex');
   } catch (err) {
-    return res
-      .status(401)
-      .send({ message: 'Необходима авторизация' });
+    return next(new AuthError401('Необходима авторизация'));
   }
 
   req.user = payload;

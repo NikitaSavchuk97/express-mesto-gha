@@ -1,30 +1,23 @@
 const router = require('express').Router();
-const { celebrate, Joi } = require('celebrate');
 
 const {
-  getUsers, getUserMe, getUserById, updateUserById, updateAvatarById,
+  getUsers,
+  getUserMe,
+  getUserById,
+  updateUserById,
+  updateAvatarById,
 } = require('../controllers/users');
+
+const {
+  getUserByIdValidation,
+  updateUserByIdValidation,
+  updateAvatarByIdValidation,
+} = require('../middlewares/validations');
 
 router.get('/users', getUsers);
 router.get('/users/me', getUserMe);
-
-router.get('/users/:userId', celebrate({
-  params: Joi.object().keys({
-    userId: Joi.string().length(24).hex(),
-  }),
-}), getUserById);
-
-router.patch('/users/me', celebrate({
-  body: Joi.object().keys({
-    name: Joi.string().min(2).max(30),
-    about: Joi.string().min(2).max(30),
-  }),
-}), updateUserById);
-
-router.patch('/users/me/avatar', celebrate({
-  body: Joi.object().keys({
-    avatar: Joi.string().required().pattern(/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w.-]+)+[\w\-._~:/?#[\]@!$&'()*+,;=.]+$/),
-  }),
-}), updateAvatarById);
+router.get('/users/:userId', getUserByIdValidation, getUserById);
+router.patch('/users/me', updateUserByIdValidation, updateUserById);
+router.patch('/users/me/avatar', updateAvatarByIdValidation, updateAvatarById);
 
 module.exports = router;
