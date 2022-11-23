@@ -6,7 +6,7 @@ module.exports = (req, res, next) => {
   const token = req.cookies.jwt;
 
   if (!token) {
-    return next(new AuthError401('Необходима авторизация'));
+    return next(new AuthError401('Необходима авторизация 1'));
   }
 
   let payload;
@@ -14,7 +14,7 @@ module.exports = (req, res, next) => {
   try {
     payload = jsonwebtoken.verify(token, 'yandex');
   } catch (err) {
-    return next(new AuthError401('Необходима авторизация'));
+    return next(new AuthError401('Необходима авторизация 2'));
   }
 
   req.user = payload;

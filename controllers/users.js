@@ -27,7 +27,7 @@ module.exports.loginUser = (req, res, next) => {
       });
     })
     .catch(() => {
-      next(new AuthError401('Пользователя с таким email не существует'));
+      next(new AuthError401('Пользователя с таким email не существует 1'));
     });
 };
 
@@ -48,7 +48,7 @@ module.exports.createUser = (req, res, next) => {
     }))
     .catch((err) => {
       if (err.code === 11000) {
-        next(new ConflictError409('Пользователь с таким email уже существует'));
+        next(new ConflictError409('Пользователь с таким email уже существует 1'));
       } else if (err.name === 'ValidationError') {
         next(new BadRequestError400('Некорректные данные'));
       } else {
